@@ -44,7 +44,7 @@ export const POST: RequestHandler = async ({ request, cookies, locals }) => {
     console.error('Error creating wall:', error);
     
     if (error instanceof z.ZodError) {
-      return json({ error: 'Invalid input', details: error.errors }, { status: 400 });
+      return json({ error: 'Invalid input', details: error.issues }, { status: 400 });
     }
     
     return json({ error: 'Failed to create wall' }, { status: 500 });

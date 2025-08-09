@@ -21,6 +21,8 @@
 		"@tailwindcss/forms": "^0.5.10",
 		"@tailwindcss/typography": "^0.5.16",
 		"@testing-library/svelte": "^5.2.8",
+		"@types/react": "^18.3.23",
+		"@types/react-dom": "^18.3.7",
 		"@typescript-eslint/eslint-plugin": "^8.39.0",
 		"@typescript-eslint/parser": "^8.39.0",
 		"autoprefixer": "^10.4.21",
@@ -37,12 +39,15 @@
 		"vitest": "^3.2.4"
 	},
 	"dependencies": {
+		"@excalidraw/excalidraw": "^0.18.0",
 		"@supabase/ssr": "^0.6.1",
 		"@supabase/supabase-js": "^2.54.0",
 		"bits-ui": "^2.9.2",
 		"clsx": "^2.1.1",
 		"lucide-svelte": "^0.539.0",
 		"nanoid": "^5.1.5",
+		"react": "^18.3.1",
+		"react-dom": "^18.3.1",
 		"tailwind-merge": "^3.3.1",
 		"tailwind-variants": "^2.1.0",
 		"zod": "^4.0.16"

@@ -6,17 +6,6 @@
 	import PlacesAutocomplete from '$lib/components/places-autocomplete.svelte';
 	import { generateSlug } from '$lib/utils/slug';
 
-	type PlaceDetails = {
-		place_id: string;
-		name?: string;
-		formatted_address?: string;
-		location?: {
-			lat: number;
-			lng: number;
-		};
-		types?: string[];
-	};
-
 	type Props = {
 		open?: boolean;
 		onclose?: () => void;
@@ -26,9 +15,8 @@
 
 	let name = $state('');
 	let location = $state('');
-	let selectedPlace: PlaceDetails | null = $state(null);
+	let locationDetails = $state<any>(null);
 	let loading = $state(false);
-
 
 	let slug = $derived(generateSlug(name));
 
@@ -42,20 +30,13 @@
 		loading = true;
 
 		try {
-			const wallData: any = {
-				name: name.trim()
+			const wallData = {
+				name: name.trim(),
+				location_name: locationDetails?.formatted_address || location || undefined,
+				location_place_id: locationDetails?.place_id || undefined,
+				location_lat: locationDetails?.location?.lat || undefined,
+				location_lng: locationDetails?.location?.lng || undefined
 			};
-
-			if (selectedPlace) {
-				wallData.location_name = selectedPlace.formatted_address;
-				wallData.location_place_id = selectedPlace.place_id;
-				if (selectedPlace.location) {
-					wallData.location_lat = selectedPlace.location.lat;
-					wallData.location_lng = selectedPlace.location.lng;
-				}
-			} else if (location.trim()) {
-				wallData.location_name = location.trim();
-			}
 
 			const response = await fetch('/api/walls', {
 				method: 'POST',
@@ -75,7 +56,7 @@
 			// Reset form
 			name = '';
 			location = '';
-			selectedPlace = null;
+			locationDetails = null;
 			
 			// Close modal
 			if (onclose) onclose();
@@ -92,14 +73,13 @@
 	function handleClose() {
 		name = '';
 		location = '';
-		selectedPlace = null;
+		locationDetails = null;
 		if (onclose) onclose();
 		else open = false;
 	}
 
-	function handlePlaceSelect(place: PlaceDetails) {
-		selectedPlace = place;
-		location = place.formatted_address || place.name || '';
+	function handlePlaceSelect(details: any) {
+		locationDetails = details;
 	}
 </script>
 
@@ -107,7 +87,7 @@
 	bind:open
 	onclose={handleClose}
 	title="Create New Wall"
-	description="Give your wall a name and location to get started."
+	description="Give your wall a name to get started."
 >
 	<form onsubmit={handleSubmit} class="space-y-4">
 		<div>
@@ -132,14 +112,12 @@
 			<PlacesAutocomplete
 				bind:value={location}
 				onplaceselect={handlePlaceSelect}
-				placeholder="Search for a location..."
+				placeholder="Enter location..."
 				disabled={loading}
 				class="mt-1"
 			/>
-			<p class="mt-1 text-xs text-gray-500">
-				Search for a specific place or address
-			</p>
 		</div>
+
 
 		<div class="flex justify-end gap-2 pt-4">
 			<Button
