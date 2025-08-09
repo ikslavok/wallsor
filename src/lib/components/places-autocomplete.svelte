@@ -103,7 +103,11 @@
 			case 'Enter':
 				event.preventDefault();
 				if (selectedIndex >= 0 && selectedIndex < predictions.length) {
+					// Select the highlighted item
 					selectPlace(predictions[selectedIndex]);
+				} else if (predictions.length > 0) {
+					// If no item is highlighted but we have predictions, select the first one
+					selectPlace(predictions[0]);
 				}
 				break;
 			case 'Escape':

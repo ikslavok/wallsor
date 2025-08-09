@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Search, Plus, Map } from 'lucide-svelte';
+	import { Search, Plus, Map, User } from 'lucide-svelte';
 	import Button from '$lib/components/ui/button.svelte';
 	import Input from '$lib/components/ui/input.svelte';
 	import CreateWallModal from '$lib/components/create-wall-modal.svelte';
@@ -39,6 +39,10 @@
 		showCreateModal = true;
 	}
 
+	function handleProfileClick() {
+		window.location.href = '/user';
+	}
+
 	function handleMapClick() {
 		viewMode = 'map';
 	}
@@ -61,7 +65,17 @@
 
 	<div class="container mx-auto px-4 py-12">
 		<!-- Header with search -->
-		<div class="mb-12 text-center">
+		<div class="mb-12 text-center relative">
+			<!-- Profile button - positioned absolutely in top-right -->
+			<Button
+				onclick={handleProfileClick}
+				variant="outline"
+				size="icon"
+				class="absolute top-0 right-0 w-10 h-10 rounded-full"
+			>
+				<User class="h-5 w-5" />
+			</Button>
+
 			<h1 class="mb-8 text-4xl font-bold text-gray-900">Wallsor</h1>
 			
 			<div class="mx-auto max-w-2xl">
@@ -123,7 +137,7 @@
 					>
 						<div class="aspect-[16/10] bg-gray-100"></div>
 						<div class="p-4">
-							<h3 class="font-semibold text-gray-900 group-hover:text-blue-600">
+							<h3 class="font-semibold text-gray-900 group-hover:text-green-600">
 								{wall.name}
 							</h3>
 						</div>

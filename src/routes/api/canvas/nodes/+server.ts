@@ -38,6 +38,12 @@ export const POST: RequestHandler = async ({ request, cookies, locals }) => {
 		
 		const supabase = createSupabaseServerClient(cookies);
 		
+		// Set the current user context for RLS
+		await supabase.rpc('set_config', {
+			setting_name: 'app.current_user_id',
+			setting_value: anonId
+		});
+		
 		// Create new canvas node
 		const { data: node, error } = await supabase
 			.from('canvas_nodes')
@@ -73,7 +79,7 @@ export const POST: RequestHandler = async ({ request, cookies, locals }) => {
 	}
 };
 
-export const GET: RequestHandler = async ({ url, cookies }) => {
+export const GET: RequestHandler = async ({ url, cookies, locals }) => {
 	try {
 		const wall_id = url.searchParams.get('wall_id');
 		const session_id = url.searchParams.get('session_id');
@@ -84,6 +90,13 @@ export const GET: RequestHandler = async ({ url, cookies }) => {
 		
 		const parsed = GetNodesSchema.parse({ wall_id, session_id });
 		const supabase = createSupabaseServerClient(cookies);
+		const anonId = locals.anonId;
+		
+		// Set the current user context for RLS
+		await supabase.rpc('set_config', {
+			setting_name: 'app.current_user_id',
+			setting_value: anonId
+		});
 		
 		let query = supabase
 			.from('canvas_nodes')
@@ -122,6 +135,12 @@ export const PUT: RequestHandler = async ({ request, cookies, locals }) => {
 		const anonId = locals.anonId;
 		
 		const supabase = createSupabaseServerClient(cookies);
+		
+		// Set the current user context for RLS
+		await supabase.rpc('set_config', {
+			setting_name: 'app.current_user_id',
+			setting_value: anonId
+		});
 		
 		// Update node (only if created by the same user)
 		const { data: node, error } = await supabase
@@ -170,6 +189,12 @@ export const DELETE: RequestHandler = async ({ url, cookies, locals }) => {
 		
 		const anonId = locals.anonId;
 		const supabase = createSupabaseServerClient(cookies);
+		
+		// Set the current user context for RLS
+		await supabase.rpc('set_config', {
+			setting_name: 'app.current_user_id',
+			setting_value: anonId
+		});
 		
 		// Delete node (only if created by the same user)
 		const { error } = await supabase

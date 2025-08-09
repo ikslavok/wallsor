@@ -19,6 +19,12 @@ export const POST: RequestHandler = async ({ request, cookies, locals }) => {
 		
 		const supabase = createSupabaseServerClient(cookies);
 		
+		// Set the current user context for RLS
+		await supabase.rpc('set_config', {
+			setting_name: 'app.current_user_id',
+			setting_value: anonId
+		});
+		
 		// Create new canvas session
 		const { data: session, error } = await supabase
 			.from('canvas_sessions')
@@ -46,7 +52,7 @@ export const POST: RequestHandler = async ({ request, cookies, locals }) => {
 	}
 };
 
-export const GET: RequestHandler = async ({ url, cookies }) => {
+export const GET: RequestHandler = async ({ url, cookies, locals }) => {
 	try {
 		const wall_id = url.searchParams.get('wall_id');
 		if (!wall_id) {
@@ -55,6 +61,13 @@ export const GET: RequestHandler = async ({ url, cookies }) => {
 		
 		const parsed = GetSessionsSchema.parse({ wall_id });
 		const supabase = createSupabaseServerClient(cookies);
+		const anonId = locals.anonId;
+		
+		// Set the current user context for RLS
+		await supabase.rpc('set_config', {
+			setting_name: 'app.current_user_id',
+			setting_value: anonId
+		});
 		
 		// Get sessions for wall
 		const { data: sessions, error } = await supabase
